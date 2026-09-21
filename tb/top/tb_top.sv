@@ -31,6 +31,7 @@ module tb_top;
   ) sva (
       .clk,
       .rst_n(vif.rst_n),
+      .start(vif.start),
       .busy (vif.busy),
       .done (vif.done),
       .sclk (vif.sclk),

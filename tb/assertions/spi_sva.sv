@@ -4,6 +4,7 @@ module spi_sva #(
 ) (
     input logic clk,
     rst_n,
+    start,
     busy,
     done,
     sclk,
@@ -17,9 +18,11 @@ module spi_sva #(
   ap_idle_cs :
   assert property (!busy |-> cs_n == '1);
   ap_idle_clock :
-  assert property (!busy |-> sclk == cpol);
+  assert property (!busy && !start |-> sclk == cpol);
   ap_done_pulse :
   assert property (done |=> !done);
+  ap_done_returns_idle :
+  assert property (done |-> !busy && cs_n == '1 && sclk == $past(cpol));
   cp_transfer :
   cover property ($rose(busy) ##[1:200] done);
 endmodule

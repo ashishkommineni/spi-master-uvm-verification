@@ -8,6 +8,16 @@ package spi_uvm_pkg;
     rand bit cpol, cpha;
     rand bit [$clog2(NUM_CS)-1:0] cs;
     bit [DATA_WIDTH-1:0] rx_data;
+    constraint c_target {cs inside {[0 : NUM_CS - 1]};}
+    constraint c_payload {
+      data dist {
+        8'h00 := 1,
+        8'hff := 1,
+        8'h55 := 1,
+        8'haa := 1,
+        [8'h01 : 8'hfe] := 12
+      };
+    }
     `uvm_object_utils_begin(spi_item)
       `uvm_field_int(data, UVM_HEX)
       `uvm_field_int(cpol, UVM_DEFAULT)
@@ -115,6 +125,9 @@ package spi_uvm_pkg;
       if (tr.rx_data !== tr.data)
         `uvm_error("LOOPBACK", $sformatf(
                    "mode=%0d tx=%02h rx=%02h", {tr.cpol, tr.cpha}, tr.data, tr.rx_data))
+    endfunction
+    function void check_phase(uvm_phase phase);
+      if (checked == 0) `uvm_error("NO_TRAFFIC", "No SPI transfers reached the scoreboard")
     endfunction
     function void report_phase(uvm_phase phase);
       `uvm_info("SPI_SUMMARY", $sformatf("Checked %0d transfers", checked), UVM_LOW)

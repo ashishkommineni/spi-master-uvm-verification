@@ -36,7 +36,7 @@ module spi_master #(
   logic [     DIV_W-1:0] div_count_q;
   logic [   COUNT_W-1:0] sample_count_q;
   logic [DATA_WIDTH-1:0] tx_shift_q;
-  logic [DATA_WIDTH-1:0] rx_shift_q;
+  logic [DATA_WIDTH-2:0] rx_shift_q;
   logic                  finish_pending_q;
   logic                  leading_edge;
   logic                  sample_edge;
@@ -103,9 +103,9 @@ module spi_master #(
           end
 
           if (sample_edge) begin
-            rx_shift_q <= {rx_shift_q[DATA_WIDTH-2:0], miso};
+            rx_shift_q <= (rx_shift_q << 1) | {{(DATA_WIDTH - 2) {1'b0}}, miso};
             if (sample_count_q == LAST_SAMPLE) begin
-              rx_data <= {rx_shift_q[DATA_WIDTH-2:0], miso};
+              rx_data <= {rx_shift_q, miso};
               if (cpha) begin
                 // CPHA=1 samples on the trailing edge, which already returns SCLK to idle.
                 sclk <= cpol;

@@ -21,7 +21,7 @@ make lint      # Verilator RTL lint
 make smoke     # 16 real loopback transfers
 ```
 
-Successful portable execution prints `SPI_SMOKE_PASS checks=16`. The Xcelium test adds constrained-random mode/data/select combinations and reports `SPI_SUMMARY` with zero UVM errors.
+Successful portable execution runs the SVA and prints `SPI_SMOKE_PASS checks=16`. The Xcelium test adds constrained-random mode/data/select combinations and reports `SPI_SUMMARY` with zero UVM errors.
 
 See [verified results and tool scope](docs/verification_results.md) for the reproducible validation record.
 

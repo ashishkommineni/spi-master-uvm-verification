@@ -12,7 +12,7 @@ lint:
 	$(VERILATOR) --lint-only --sv --timing -Wall -Wno-fatal rtl/spi_master.sv
 smoke:
 	rm -rf build/obj_spi;mkdir -p build
-	$(VERILATOR) --binary --sv --timing --assert -Wall -Wno-fatal --top-module tb_spi_smoke --Mdir build/obj_spi rtl/spi_master.sv tb/smoke/tb_spi_smoke.sv
-	./build/obj_spi/Vtb_spi_smoke|tee results_smoke.log
+	$(VERILATOR) --binary --sv --timing --assert -Wall -Wno-fatal -Wno-SYNCASYNCNET --top-module tb_spi_smoke --Mdir build/obj_spi rtl/spi_master.sv tb/assertions/spi_sva.sv tb/smoke/tb_spi_smoke.sv
+	bash -o pipefail -c './build/obj_spi/Vtb_spi_smoke | tee results_smoke.log'
 clean:
 	rm -rf build xcelium.d INCA_libs waves.shm results *.log *.key

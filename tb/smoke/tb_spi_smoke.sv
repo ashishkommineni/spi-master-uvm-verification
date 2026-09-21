@@ -16,6 +16,18 @@ module tb_spi_smoke;
   ) dut (
       .*
   );
+  spi_sva #(
+      .NUM_CS(NUM_CS)
+  ) sva (
+      .clk,
+      .rst_n,
+      .start,
+      .busy,
+      .done,
+      .sclk,
+      .cpol,
+      .cs_n
+  );
   task automatic transfer(input logic [1:0] mode, input logic [1:0] cs, input logic [7:0] data);
     while (busy) @(posedge clk);
     @(negedge clk);
@@ -42,7 +54,8 @@ module tb_spi_smoke;
     repeat (4) @(posedge clk);
     rst_n = 1;
     for (int m = 0; m < 4; m++)
-    for (int c = 0; c < 4; c++) transfer(2'(m), 2'(c), DATA_WIDTH'(8'h81 ^ (m << 4) ^ c));
+    for (int c = 0; c < 4; c++)
+    transfer(2'(m), 2'(c), 8'h81 ^ DATA_WIDTH'(m << 4) ^ DATA_WIDTH'(c));
     $display("SPI_SMOKE_PASS checks=%0d", checks);
     $finish;
   end
